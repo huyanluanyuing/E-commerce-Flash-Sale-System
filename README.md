@@ -76,7 +76,7 @@ Stress testing was conducted using **Apache JMeter** with the following configur
 **Results:**
 | Metric | Direct DB Access | With Redis & MQ Optimization | Improvement |
 | :--- | :--- | :--- | :--- |
-| **QPS** | ~1,267 | **~2,884** | **+127%** |
+| **QPS** | ~1,211 | **~2,543** | **+110%** |
 | **Response Time** | High Latency | Low Latency | Significant Drop |
 | **DB Load** | High (Risk of crash) | Stable | **Protected** |
 
