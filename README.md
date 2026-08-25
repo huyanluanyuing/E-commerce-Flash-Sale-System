@@ -47,6 +47,14 @@ To minimize database hits, a 3-level caching strategy is implemented:
 
 ---
 
+## Key Design Trade-offs
+
+### Redis vs. MySQL. Redis is used as the high-throughput inventory gate, while MySQL remains the persistent source of truth. This significantly reduces database contention during traffic spikes, but introduces the need to keep the Redis-side inventory state and persistent order data synchronized.
+
+### Synchronous vs. Asynchronous Order Processing. Writing orders directly to MySQL would provide a simpler request flow, but would make database throughput the bottleneck during sudden traffic spikes. I therefore use RabbitMQ to decouple purchase requests from database writes. This allows the application to absorb bursts and process orders at a controlled rate, at the cost of additional messaging and eventual consistency complexity.
+
+---
+
 ## Tech Stack
 
 * **Core Framework:** Spring Boot
@@ -77,7 +85,6 @@ Stress testing was conducted using **Apache JMeter** with the following configur
 | Metric | Direct DB Access | With Redis & MQ Optimization | Improvement |
 | :--- | :--- | :--- | :--- |
 | **QPS** | ~1,211 | **~2,543** | **+110%** |
-| **Response Time** | High Latency | Low Latency | Significant Drop |
 | **DB Load** | High (Risk of crash) | Stable | **Protected** |
 
 ---
